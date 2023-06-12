@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block header %}<h1 style="text-align: center">{% block title %} Console Specific Sales {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<blockquote class="blockquote">Evaluation Question #1: Which video game console is best to invest in based on the number of game copies sold globally on that console since 2013?</blockquote>
+<h5>Answer: Based upon data collected, the best videogame console to invest in would be the PS4 as it had the most videogames sold out of any console since 2013.</h5>
+
+<div class = "row">
+    <div class ="col-1"></div>
+    <div class ="col-10"><canvas id="chart1" width="400px" height="400px"></canvas></div>
+    <div class ="col-1"></div>
+</div>
+
+<blockquote class="blockquote">Evaluation Question #2: What were the top selling games per console?</blockquote>
+<h5>Answer: Utilize the dropdown to view a visualization to answer this question on a per-console basis.</h5>
+
+<div class="m-3">
+    <p>Choose a console to view game sales data for</p>
+<form method="post">
+    <div class = "row">
+        <div class = "col-9">
+            <form method="post">
+                <select class="form-select" id="consoles" name="consoles">
+                {% for console in platforms %}
+                    <option {% if consoleselected == console %}selected{% endif %} value="{{ console }}">{{ console }}</option>
+                {% endfor %}
+                </select>
+            </form>
+        </div>
+        <div class = "col-3 d-grid">
+            <button class="btn btn-primary" type="submit" >Search</button>
+        </div>
+
+    </div>
+</form>
+</div>
+
+{% if consoleselected != None %}
+<div class = "row">
+    <div class ="col-1"></div>
+    <div class ="col-10"><canvas id="chart2" width="400px" height="400px"></canvas></div>
+    <div class ="col-1"></div>
+</div>
+{% endif %}
+
+<script src="./../../static/Chart.js"></script>
+<script>
+    var ctx = document.getElementById('chart1');
+    var salesChart13 = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for platform in platforms13 %}'{{ platform }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Millions of Game Copies Sold',
+                data: [{% for salesfig in sales13 %}{{ salesfig }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: ['#e6194B', '#3cb44b', '#a9a9a9', '#f58231', '#42d4f4', '#f032e6', '#ffe119', '#4363d8', '#bfef45', '#911eb4'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Millions of game copies sold'
+                    }
+                }]
+            },
+            title: {
+                display: true,
+                text: 'Game Sales (in millions) Per Platform Since 2013'
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+
+    var cts = document.getElementById('chart2');
+    var salesChartConsole = new Chart(cts, {
+        type: 'pie',
+        data: {
+            labels: [{% for title in console_titles %}'{{ title }}'{% if not loop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Millions of Game Copies Sold',
+                data: [{% for salesfig in title_sales %}{{ salesfig }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+                    ],
+                borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+
+            title: {
+                display: true,
+                text: 'Game Sales on Console'
+            },
+            legend: {
+                display: false
+            }
+        }
+    });
+</script>
+
+
+{% endblock %}

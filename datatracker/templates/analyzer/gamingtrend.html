@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1 style="text-align: center">{% block title %} Industry Sales Trends - By Region {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<blockquote class="blockquote">Evaluation Question: What is the industry trend, broken down by region, of videogame sales?</blockquote>
+<h5>Answer: Data collected here indicates total game sales peaked in 2008 and has been on the downturn since. Further analysis of the source data is needed.</h5>
+<div class = "row">
+    <div class ="col-1"></div>
+    <div class ="col-10"><canvas id="gamingsalestrend" width="400px" height="400px"></canvas></div>
+    <div class ="col-1"></div>
+</div>
+
+<script src="./../../static/Chart.js"></script>
+<script>
+    var ctx = document.getElementById('gamingsalestrend');
+
+
+
+    var lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Global',
+                fill: false,
+                borderColor: 'black',
+                backgroundColor: 'black',
+                data: [{% for each in globalsales %} {x:{{each}}, y:{{globalsales[each]}}} {% if not loop.last %}, {% endif %} {% endfor %}]
+            },
+            {
+                label: 'NA',
+                borderColor: 'red',
+                backgroundColor: 'red',
+                fill: false,
+                data: [{% for each in nasales %} {x:{{each}}, y:{{nasales[each]}}} {% if not loop.last %}, {% endif %} {% endfor %}]
+            },
+            {
+                label: 'EU',
+                borderColor: 'blue',
+                backgroundColor: 'blue',
+                fill: false,
+                data: [{% for each in eusales %} {x:{{each}}, y:{{eusales[each]}}} {% if not loop.last %}, {% endif %} {% endfor %}]
+            },
+            {
+                label: 'JP',
+                borderColor: 'orange',
+                backgroundColor: 'orange',
+                fill: false,
+                data: [{% for each in jpsales %} {x:{{each}}, y:{{jpsales[each]}}} {% if not loop.last %}, {% endif %} {% endfor %}]
+            },
+            {
+                label: 'Other',
+                borderColor: 'magenta',
+                BackgroundColor: 'magenta',
+                fill: false,
+                data: [{% for each in othersales %} {x:{{each}}, y:{{othersales[each]}}} {% if not loop.last %}, {% endif %} {% endfor %}]
+            }
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom'
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Millions of game copies sold'
+                        }
+                }]
+            }
+        }
+    });
+
+</script>
+{% endblock %}
